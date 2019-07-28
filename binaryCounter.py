@@ -45,33 +45,33 @@ COUNTER=0
 # Save Button Presses
 def onClickButton():
     global COUNTER
-    if (GPIO.input(UP_BUTTON) == False and COUNTER != 7):
+    if (GPIO.input(UP_BUTTON) == False and COUNTER != 7): # Ok! to increment
         COUNTER += 1
         print (bin(COUNTER)[2:].zfill(3))
         sleep(0.5)
-    if (GPIO.input(UP_BUTTON) == False and COUNTER == 7):
-        COUNTER = 0
+    if (GPIO.input(UP_BUTTON) == False and COUNTER == 7): # Stop increment and Restart 
+        COUNTER = 0 # At 0
         print (bin(COUNTER)[2:].zfill(3))
         sleep(0.5)
-    if (GPIO.input(DOWN_BUTTON) == False and COUNTER != 0):
+    if (GPIO.input(DOWN_BUTTON) == False and COUNTER != 0): # Ok! to decrement
         COUNTER -= 1
         print (bin(COUNTER)[2:].zfill(3))
         sleep(0.5)
-    if (GPIO.input(DOWN_BUTTON) == False and COUNTER == 0):
-        COUNTER = 7
+    if (GPIO.input(DOWN_BUTTON) == False and COUNTER == 0): # Stop decrement and Restart
+        COUNTER = 7 # At 7
         print (bin(COUNTER)[2:].zfill(3))
         sleep(0.5)
     return
-
+# Control on and off state of LEDs
 def control(counter):
     binaryValue = bin(counter)[2:].zfill(3)
     for key, value in enumerate(binaryValue):
         if (value == '1'):
-            onValue(key)
+            onValue(key) # Set appropiate LEDs to HIGH
         else:
-            offValue(key)
+            offValue(key) # Set appropiate LEDs to LOW
     return
-
+# Select LEDs to be set HIGH
 def onValue(pin):
     if (pin == 0):
         GPIO.output(LED_1, True)
@@ -80,7 +80,7 @@ def onValue(pin):
     if (pin == 2):
         GPIO.output(LED_3, True)
     return
-
+# Select LEDs to be set LOW
 def offValue(pin):
     if (pin == 0):
         GPIO.output(LED_1, False)
