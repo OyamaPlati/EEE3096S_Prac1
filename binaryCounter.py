@@ -43,25 +43,34 @@ GPIO.output(LED_3, False)
 COUNTER=0
 
 # Save Button Presses
-def onClickButton():
+def onClickButtonUp(channel):
     global COUNTER
-    if (GPIO.input(UP_BUTTON) == False and COUNTER != 7): # Ok! to increment
+    if (GPIO.event_detected(channel) and COUNTER != 7): # Ok! to increment
         COUNTER += 1
         print (bin(COUNTER)[2:].zfill(3))
         sleep(0.5)
-    if (GPIO.input(UP_BUTTON) == False and COUNTER == 7): # Stop increment and Restart 
+    if (GPIO.event_detected(channel) and COUNTER == 7): # Stop increment and Restart
         COUNTER = 0 # At 0
         print (bin(COUNTER)[2:].zfill(3))
         sleep(0.5)
-    if (GPIO.input(DOWN_BUTTON) == False and COUNTER != 0): # Ok! to decrement
+    return
+
+def onClickButtonDown(channel):
+    global COUNTER
+    if (GPIO.event_detected(channel) and COUNTER != 0): # Ok! to decrement
         COUNTER -= 1
         print (bin(COUNTER)[2:].zfill(3))
         sleep(0.5)
-    if (GPIO.input(DOWN_BUTTON) == False and COUNTER == 0): # Stop decrement and Restart
+    if (GPIO.event_detected(channel) and COUNTER == 0): # Stop decrement and Restart
         COUNTER = 7 # At 7
         print (bin(COUNTER)[2:].zfill(3))
         sleep(0.5)
     return
+
+# Add rising edge detection on a channel, ignoring further edges for 200ms for switchbouncing
+GPIO.add_event_detect(UP_BUTTON, GPIO.RISING, callback=onClickButtonUp, bouncetime=200)
+GPIO.add_event_detect(DOWN_BUTTON, GPIO.RISING, callback=onClickButtonDown, bouncetime=200)
+
 # Control on and off state of LEDs
 def control(counter):
     binaryValue = bin(counter)[2:].zfill(3)
@@ -92,7 +101,10 @@ def offValue(pin):
 
 # Logic tO write
 def main():
-    onClickButton()
+    global UP_BUTTON
+    global DOWN_BUTTON
+    onClickButtonUp(UP_BUTTON)
+    onClickButtonDown(DOWN_BUTTON)
     control(COUNTER)
 
 # Only run the functions if
